@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>MIDEN OG NFT CHECKER
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDEN OG NFT CHECKER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* 🎬 GIF BACKGROUND - Replace the URL with your own GIF */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* 👇 PUT YOUR GIF URL HERE 👇 */
+            background-image: url('background.gif.mp4');
+
+            
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: brightness(0.7); /* Dims the GIF so text is readable */
+            z-index: 0;
+        }
+
+        /* Dark overlay to make text pop */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0.7);
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            background: rgba(211, 120, 35, 0.9);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(221, 234, 235, 0.4);
+            border-radius: 24px;
+            padding: 50px 60px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(253, 252, 254, 0.5);
+            animation: slideIn 0.8s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ecebed, #d8830b);
+            border-radius: 20px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 0 30px rgba(250, 249, 251, 0.6);
+            }
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 50px rgba(174, 106, 24, 0.8);
+            }
+        }
+
+        h1 {
+            color: #fff;
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #ecf1f1, #975c1d, #000a0a);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 0% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 40px;
+            font-size: 14px;
+            letter-spacing: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #ebf2f2;
+            margin-bottom: 8px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(210, 217, 217, 0.05);
+            border: 1px solid rgba(4, 0, 8, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ca803f;
+            background: rgba(42, 18, 65, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        input::placeholder {
+            color: rgba(242, 239, 239, 0.3);
+        }
+
+        .check-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #dedbe0, #ae6e16);
+            border: none;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .check-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .check-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .check-btn:hover:not(:disabled)::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .check-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .check-btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 30px;
+            background: rgba(2, 7, 7, 0.05);
+            border: 2px solid rgba(233, 243, 244, 0.3);
+            border-radius: 16px;
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .status {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .status.eligible {
+            color: #00e178;
+            text-shadow: 0 0 20px rgba(189, 126, 25, 0.5);
+        }
+
+        .status.not-eligible {
+            color: #ff4466;
+            text-shadow: 0 0 20px rgba(7, 0, 2, 0.5);
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+            padding: 12px;
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 8px;
+            border-left: 3px solid #d9d4de;
+        }
+
+        .info-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .info-value {
+            color: #00f5ff;
+            font-weight: bold;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .checkmark {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00d4ff);
+            margin: 0 auto 20px;
+            position: relative;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .checkmark::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .xmark {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f0efef, #0e0d0d);
+            margin: 0 auto 20px;
+            position: relative;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .xmark::after {
+            content: '✕';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .icon-container {
+            text-align: center;
+            animation: float-icon 3s ease-in-out infinite;
+        }
+
+        @keyframes float-icon {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .error {
+            background: rgba(255, 68, 102, 0.1);
+            border: 1px solid #ff4466;
+            color: #ff4466;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+        <div class="logo">
+    <img src="https://imgur.com/a/miden-lGIykGT" alt="Logo" style="width: 100%; height: 100%; object-fit: contain;">
+</div>
+        
+        <h1>MIDEN OG NFT CHECKER</h1>
+        <p class="subtitle">Check your eligibilityStatus</p>
+
+        <form id="checkForm">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username" required>
+            </div>
+
+            <div class="input-group">
+                <label for="wallet">Wallet Address</label>
+                <input type="text" id="wallet" placeholder="0x..." required>
+            </div>
+
+            <button type="submit" class="check-btn" id="submitBtn">
+                <span id="btnText">Check Eligibility</span>
+            </button>
+        </form>
+
+        <div id="errorMsg"></div>
+
+        <div id="result" class="result">
+            <div class="icon-container" id="iconContainer"></div>
+            <div class="status" id="status"></div>
+            <div class="info-item">
+                <span class="info-label">Username:</span>
+                <span class="info-value" id="displayUsername"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Wallet:</span>
+                <span class="info-value" id="displayWallet"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">NFTs Held:</span>
+                <span class="info-value" id="nftCount"></span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Status:</span>
+                <span class="info-value" id="eligibilityStatus"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 🌐 BACKEND API URL - Change this to your server URL
+        const API_URL = 'http://localhost:3000';
+
+        document.getElementById('checkForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const wallet = document.getElementById('wallet').value;
+            const result = document.getElementById('result');
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            const errorMsg = document.getElementById('errorMsg');
+            
+            // Clear previous errors
+            errorMsg.innerHTML = '';
+            result.classList.remove('show');
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            btnText.innerHTML = 'Checking<span class="loading"></span>';
+            
+            try {
+                // 📡 CALL BACKEND API
+                const response = await fetch(`${API_URL}/api/check-eligibility`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, wallet })
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Display results from backend
+                document.getElementById('displayUsername').textContent = data.username;
+                document.getElementById('displayWallet').textContent = data.wallet;
+                document.getElementById('nftCount').textContent = data.nftCount;
+                
+                const iconContainer = document.getElementById('iconContainer');
+                const status = document.getElementById('status');
+                iconContainer.innerHTML = '';
+                
+                if (data.eligible) {
+                    const checkmark = document.createElement('div');
+                    checkmark.className = 'checkmark';
+                    iconContainer.appendChild(checkmark);
+                    
+                    status.textContent = ' ELIGIBLE';
+                    status.className = 'status eligible';
+                    document.getElementById('eligibilityStatus').textContent = data.message;
+                    document.getElementById('eligibilityStatus').style.color = '#00ff88';
+                } else {
+                    const xmark = document.createElement('div');
+                    xmark.className = 'xmark';
+                    iconContainer.appendChild(xmark);
+                    
+                    status.textContent = '⚠️ NOT ELIGIBLE ⚠️';
+                    status.className = 'status not-eligible';
+                    document.getElementById('eligibilityStatus').textContent = data.message;
+                    document.getElementById('eligibilityStatus').style.color = '#ff4466';
+                }
+                
+                result.classList.add('show');
+                result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                
+            } catch (error) {
+                console.error('Error:', error);
+                errorMsg.innerHTML = `<div class="error">❌ ${error.message}</div>`;
+            } finally {
+                // Reset button
+                submitBtn.disabled = false;
+                btnText.textContent = 'Check Eligibility';
+            }
+        });
+    </script>
+</body>
+</html>
