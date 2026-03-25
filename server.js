@@ -15,19 +15,19 @@ let eligibleUsers = [
   {
     username: 'cryptoking',
     wallet: '0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1',
-    nftCount: 15,
+    nftCount: nill,
     eligible: true
   },
   {
     username: 'nftwhale',
     wallet: '0x8ba1f109551bD432803012645Ac136ddd64DBA72',
-    nftCount: 42,
+    nftCount: nill,
     eligible: true
   },
   {
     username: 'degen420',
     wallet: '0x5A0b54D5dc17e0AadC383d2db43B0a0D3E029c4c',
-    nftCount: 8,
+    nftCount: nill,
     eligible: true
   }
 ];
